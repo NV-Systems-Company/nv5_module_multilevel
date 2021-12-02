@@ -13,9 +13,9 @@ if (!defined('NV_MAINFILE'))
 
 $module_version = array(
     'name' => 'Multilevel',
-    'modfuncs' => 'main,detail,search',
+    'modfuncs' => 'main,detail,search,register,customer,customer_groups,order,or_view,warranty,manager_npp,manager,reward,memberlist,agency,possiton,usersp,staff,users,product,shareholder,shareholded,warehouselogs,importplan,discounts,saleoff,depot,agencycontent,maps',
     'change_alias' => 'main,detail,search',
-    'submenu' => 'main,detail,search',
+    'submenu' => 'main,detail,search,register,customer,customer_groups,order,warranty,manager,manager_npp,reward,memberlist,agency,possiton,usersp,staff,users,product,shareholder,shareholded,warehouselogs,importplan,discounts,saleoff,depot,agencycontent,maps',
     'is_sysmod' => 1,
     'virtual' => 0,
     'version' => '4.3.03',
