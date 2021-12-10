@@ -1,5 +1,7 @@
 <!-- BEGIN: main -->
+
 <form class="form-inline" role="form" action="{NV_BASE_ADMINURL}index.php" method="post">
+
     <input type="hidden" name ="{NV_NAME_VARIABLE}" value="{MODULE_NAME}" />
 	<input type="hidden" name ="{NV_OP_VARIABLE}" value="{OP}" />
 	
@@ -35,3 +37,4 @@
 </form>
 
 <!-- END: main -->
+

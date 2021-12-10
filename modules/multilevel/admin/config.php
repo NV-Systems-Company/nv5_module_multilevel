@@ -52,7 +52,7 @@ $xtpl->assign('MODULE_NAME', $module_name);
 $xtpl->assign('OP', $op);
 $xtpl->assign( 'DATA', $module_config[$module_name] );
 
-
+//var_dump($module_config[$module_name]);die;
 //-------------------------------
 // Viết code xuất ra site vào đây
 //-------------------------------
