@@ -5,9 +5,9 @@
  * @Author VINADES.,JSC <contact@vinades.vn>
  * @Copyright (C) 2021 VINADES.,JSC. All rights reserved
  * @License: Not free read more http://nukeviet.vn/vi/store/modules/nvtools/
- * @Createdate Sun, 14 Nov 2021 03:02:53 GMT
+ * @Createdate Fri, 03 Dec 2021 06:49:21 GMT
  */
-/*
+
 if (!defined('NV_IS_FILE_MODULES'))
     die('Stop!!!');
 
@@ -30,6 +30,7 @@ $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lan
 $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_orders_id_out";
 $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_possiton";
 $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_product";
+$sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_province";
 $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_saleoff";
 $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_statistic";
 $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_street";
@@ -38,6 +39,7 @@ $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lan
 $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_usersbk";
 $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_ward";
 $sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_warehouse_logs";
+$sql_drop_module[] = "DROP TABLE IF EXISTS " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_warehouse_order";
 
 $sql_create_module = $sql_drop_module;
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_agency(
@@ -146,16 +148,12 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
 ) ENGINE=MyISAM";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_district(
-  district_id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
-  city_id mediumint(8) unsigned NOT NULL DEFAULT '0',
-  title varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  alias varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  type varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  location varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  weight mediumint(8) unsigned NOT NULL DEFAULT '0',
+  id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  idprovince mediumint(8) unsigned NOT NULL DEFAULT '0',
+  title varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  weight smallint(4) unsigned NOT NULL DEFAULT '0',
   status tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (district_id),
-  UNIQUE KEY alias_city_id (alias)
+  PRIMARY KEY (id)
 ) ENGINE=MyISAM";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_groups_customer(
@@ -230,7 +228,8 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   orderid_refer int(11) NOT NULL DEFAULT '0' COMMENT 'ID đơn hàng khi trả',
   amount_refunded double NOT NULL DEFAULT '0' COMMENT 'Số tiền còn sau khi trả hàng',
   depotid smallint(6) NOT NULL,
-  status tinyint(4) NOT NULL
+  status tinyint(4) NOT NULL,
+  time_payment int(11) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM";
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_orders_id(
@@ -289,6 +288,14 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   weight smallint(6) NOT NULL DEFAULT '0'
 ) ENGINE=MyISAM";
 
+$sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_province(
+  id mediumint(8) unsigned NOT NULL AUTO_INCREMENT,
+  title varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  weight smallint(4) unsigned NOT NULL DEFAULT '0',
+  status tinyint(1) unsigned NOT NULL DEFAULT '0',
+  PRIMARY KEY (id)
+) ENGINE=MyISAM";
+
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_saleoff(
   id smallint(4) unsigned NOT NULL,
   salesfrom double DEFAULT '0' COMMENT 'doanh thu tu',
@@ -334,17 +341,25 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
 
 $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_users(
   userid smallint(5) unsigned NOT NULL,
-  username int(11) NOT NULL DEFAULT '0',
+  username varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
+  fullname varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  email varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   parentid smallint(5) unsigned NOT NULL DEFAULT '0',
   usernameparent varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '0',
   precode varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Tiền tố mã nhân viên',
   code varchar(15) COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Mã nhân viên',
   domain varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
-  mobile varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  peopleid varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
-  salary_day float DEFAULT NULL,
+  mobile varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  peopleid varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  salary_day float NOT NULL DEFAULT '0',
   benefit float DEFAULT NULL,
-  numbercarrd varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  numbercard varchar(250) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  banknumber varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  photo_befor varchar(300) COLLATE utf8mb4_unicode_ci NOT NULL,
+  photo_after varchar(300) COLLATE utf8mb4_unicode_ci NOT NULL,
+  daterange varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  issuedby varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  address varchar(300) COLLATE utf8mb4_unicode_ci NOT NULL,
   numcardtype tinyint(4) NOT NULL DEFAULT '0',
   datatext text COLLATE utf8mb4_unicode_ci,
   weight smallint(5) unsigned NOT NULL DEFAULT '0',
@@ -369,10 +384,10 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   jobid int(10) unsigned DEFAULT '0',
   pendingdelete int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Thời gian chờ xóa',
   ishidden tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT '0 không ẩn, 1 ẩn trên sơ đồ cây',
+  affiliate_code varchar(259) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
   UNIQUE KEY userid (userid),
   UNIQUE KEY precode (precode),
   UNIQUE KEY code (code),
-  KEY parentid (parentid),
   KEY haveorder (haveorder)
 ) ENGINE=MyISAM";
 
@@ -410,20 +425,17 @@ $sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_
   KEY customerid (customerid)
 ) ENGINE=MyISAM";
 
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'perpagecomm', '5')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'captcha', '1')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'sortcomm', '0')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'activecomm', '1')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'emailcomm', '0')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'adminscomm', '')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'f0', '15')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'f1', '10')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'f2', '1')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'auto_postcomm', '1')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'allowattachcomm', '0')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'view_comm', '6')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'setcomm', '4')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'allowed_comm', '-1')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'timeoutcomm', '360')";
-$sql_create_module[] = "INSERT INTO " . NV_CONFIG_GLOBALTABLE . "(lang, module, config_name, config_value) VALUES ('" . $lang . "', '" . $module_name . "', 'alloweditorcomm', '0')";
-*/
+$sql_create_module[] = "CREATE TABLE " . $db_config['prefix'] . "_" . $lang . "_" . $module_data . "_warehouse_order(
+  customerid int(11) unsigned NOT NULL DEFAULT '0',
+  depotid smallint(6) NOT NULL,
+  productid int(11) unsigned NOT NULL DEFAULT '0',
+  orderid int(11) unsigned NOT NULL DEFAULT '0',
+  quantity_befor int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'SL trc nhap-xuat',
+  quantity_in int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'SL nhập',
+  price_in float NOT NULL DEFAULT '0' COMMENT 'So tien thu duoc',
+  quantity_after int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'SL sau nhap-xuat',
+  quantity_out int(11) unsigned NOT NULL DEFAULT '0' COMMENT 'SL ban',
+  price_out float NOT NULL DEFAULT '0' COMMENT 'So tien da nhap',
+  addtime int(11) unsigned NOT NULL DEFAULT '0',
+  KEY customerid (customerid)
+) ENGINE=MyISAM";

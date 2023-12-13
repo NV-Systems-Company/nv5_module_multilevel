@@ -10,21 +10,33 @@
 
 if (!defined('NV_IS_MOD_MULTILEVEL'))
     die('Stop!!!');
-
+if($array_op[1] == "") {
+		$action = "main";
+	}elseif($array_op[1] == "alias"){
+		
+		if ($nv_Request->isset_request('get_alias_title', 'post')) {
+			$alias = $nv_Request->get_title('get_alias_title', 'post', '');
+			$alias = change_alias($alias);
+			die($alias);
+		}
+	}else{
+		$action = $array_op[1];
+	}
+}
 $id = $nv_Request->get_int('id', 'post,get', 0);
 if ($id) {
     $sql = 'SELECT * FROM ' . $db_config['prefix'] . '_' . $module_data . '_agency WHERE id=' . $id;
     $row = $db->query($sql)->fetch();
 
     if (empty($row)) {
-        nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
+        nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name);
     }
 
     $page_title = $lang_module['edit_agencycontent'];
-    $action = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;id=' . $id;
+    $action = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op . '&amp;id=' . $id;
 } else {
     $page_title = $lang_module['add_agencycontent'];
-    $action = NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op;
+    $action = NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&amp;' . NV_NAME_VARIABLE . '=' . $module_name . '&amp;' . NV_OP_VARIABLE . '=' . $op;
 }
 
 $error = '';
@@ -55,10 +67,10 @@ if ($nv_Request->get_int('save', 'post') == '1') {
 
     if (empty($row['title'])) {
         $error = $lang_module['empty_title'];
-    } elseif (strip_tags($row['bodytext']) == '') {
-        $error = $lang_module['empty_bodytext'];
-    } elseif ($row['price_require'] == 0) {
-        $error = $lang_module['empty_price_require'];
+   // } elseif (strip_tags($row['bodytext']) == '') {
+   //     $error = $lang_module['empty_bodytext'];
+//} elseif ($row['price_require'] == 0) {
+ //       $error = $lang_module['empty_price_require'];
     //}elseif ($row['percent_sale'] == 0) {
     //    $error = $lang_module['empty_percent_sale'];
     } else {
@@ -115,7 +127,7 @@ if ($nv_Request->get_int('save', 'post') == '1') {
                 }
 
                 $nv_Cache->delMod($module_name);
-                nv_redirect_location(NV_BASE_ADMINURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=agency');
+                nv_redirect_location(NV_BASE_SITEURL . 'index.php?' . NV_LANG_VARIABLE . '=' . NV_LANG_DATA . '&' . NV_NAME_VARIABLE . '=' . $module_name . '&' . NV_OP_VARIABLE . '=agency');
             } else {
                 $error = $lang_module['errorsave'];
             }

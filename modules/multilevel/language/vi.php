@@ -750,3 +750,4 @@ $lang_module['error_title'] = 'Vui lòng nhập tiêu đề';
 $lang_module['error_content'] = 'Vui lòng nhập nội dung';
 $lang_module['error_fphone'] = 'Vui lòng nhập số điện thoại';
 $lang_module['error_address'] = 'Vui lòng nhập địa chỉ';
+$lang_module['title_reg_multilevel'] = 'Đăng ký tài khoản khách hàng';
